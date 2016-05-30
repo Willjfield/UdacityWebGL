@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Lesson 2</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r77/three.js"></script>
+</head>
+<body>
+	<script type="text/javascript">
+	var scene = new THREE.Scene();
+	var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+	var renderer;
+
+	function init(){
+		renderer = new THREE.WebGLRenderer();
+		renderer.setSize( window.innerWidth, window.innerHeight );
+		document.body.appendChild( renderer.domElement );
+
+		camera.position.z = 10;
+		//camera.rotation.x = -Math.PI/2;
+	}
+
+	function render(){
+		//hex.verticesNeedUpdate = true;
+		requestAnimationFrame( render );
+		renderer.render(scene, camera);
+	}
+	var hex = PolygonGeometry(4,1,new THREE.Vector3(1,1,0));
+	var mat = new THREE.MeshBasicMaterial({color:0xffffff});
+	var polyOb = new THREE.Mesh(hex,mat);
+	scene.add(polyOb);
+
+init();
+render();
+
+function PolygonGeometry(sides, radius, location){
+	var geo = new THREE.Geometry();
+
+	for(var pt=0;pt<sides;pt++){
+		var angle = (Math.PI/2)+(pt/sides)*2*Math.PI;
+
+		var x = (Math.cos( angle ) + location.x)*radius;
+		var y = (Math.sin( angle ) + location.y)*radius;
+		var z=0;
+		geo.vertices.push(new THREE.Vector3(x,y,z));
+	}
+	geo.vertices.push(location);
+	for(var f=0;f<sides;f++){
+			geo.faces.push( 
+				new THREE.Face3( sides, f, f+1 )
+			);
+	}
+	geo.faces.push(new THREE.Face3( sides, sides-1, 0 ));
+	return geo;
+}
+	</script>
+</body>
+</html>
